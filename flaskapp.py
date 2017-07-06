@@ -14,7 +14,7 @@ def index():
 
 
 @app.route("/getlugares/<usuario_nombre>")
-@app.route("/getlugares/<usuario_nombre>")
+@app.route("/getlugares")
 def get_lugares(usuario_nombre=None):
     '''
         Retorna los lugares agregados por un usuario
