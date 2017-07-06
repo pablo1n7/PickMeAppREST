@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 from models.models import Usuario, Lugar
 from flask import Flask, request,\
@@ -13,7 +14,7 @@ def index():
 
 
 @app.route("/getlugares/<usuario_nombre>")
-@app.route("/getlugares/")
+@app.route("/getlugares/<usuario_nombre>")
 def get_lugares(usuario_nombre=None):
     '''
         Retorna los lugares agregados por un usuario
@@ -39,7 +40,7 @@ def get_lugar(nombre_lugar=None):
 def guardar_lugar():
     '''
 
-        TODO: si vamos a hacer un login en el dispositivo, el método 'guardarlugar'
+        TODO: si vamos a hacer un login en el dispositivo, el metodo 'guardarlugar'
             recibiría un id en vez de un nombre o algo asi. Me parece excesivo igual
 
         Metodo que guarda un lugar. El json que se envia por POST tiene la siguiente forma:
