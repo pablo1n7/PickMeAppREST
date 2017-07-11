@@ -15,7 +15,10 @@
     </head>
     <body>
         <style type="text/css">
-            .inline {display: inline}    
+            .inline {display: inline}
+            .method {
+                background-color: #00ab40;
+            }    
         </style>
         <div class="container">
             <div class="row">
@@ -30,14 +33,14 @@
             </div>
             <div class="row">
                 <div class="column column-75">
-                    <code class="float-right">Method: GET</code>
+                    <code class="float-right method">GET</code>
                     <h5 class="inline"><strong> / </strong></h5>
                     <p> Retorna la pagina principal. </p>
                 </div> 
             </div>
             <div class="row">
                 <div class="column column-75">
-                    <code class="float-right">Method: GET</code>
+                    <code class="float-right method">GET</code>
                     <h5 class="inline"><strong> /getlugares/&lt;usuario_nombre&gt; </strong></h5>
                     <h5><strong> /getlugares </strong></h5>
                     <p> Retorna los lugares agregados por un usuario en particular o todos si usuario_nombre no es especificado. </p>
@@ -45,14 +48,14 @@
             </div>
             <div class="row">
                 <div class="column column-75">
-                    <code class="float-right">Method: GET</code>
+                    <code class="float-right method">GET</code>
                     <h5 class="inline"><strong> /getlugar/&lt;nombre_lugar&gt; </strong></h5>
                     <p> Retorna un lugar cuyo nombre sea nombre_lugar. </p>
                 </div>
             </div>
             <div class="row">
                 <div class="column column-75">
-                    <code class="float-right">Method: POST </code>
+                    <code class="float-right method">POST </code>
                     <h5 class="inline"><strong> /guardarlugar </strong></h5>
                     <p> Permite guardar un lugar en la base de datos.
                     Los datos serán considerados válidos si tienen la siguiente forma: 
