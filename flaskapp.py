@@ -65,5 +65,10 @@ def main():
     '''Metodo principal'''
     app.run()
 
+def do_urlescape(value):
+    """Escape for use in URLs."""
+    return urllib.quote(value.encode('utf8'))
+app.jinja_env.globals['urlencode'] = do_urlescape
+
 if __name__ == '__main__':
     main()
