@@ -3,9 +3,12 @@ import json
 from models.models import Usuario, Lugar
 from flask import Flask, request,\
      render_template
+from flask.ext.autodoc import Autodoc 
+
 
 app = Flask(__name__, static_folder='statics')
 app.config.from_pyfile('flaskapp.cfg',)
+auto = Autodoc(app)
 
 @app.route("/")
 def index():
@@ -15,6 +18,7 @@ def index():
 
 @app.route("/getlugares/<usuario_nombre>")
 @app.route("/getlugares")
+@auto.doc()
 def get_lugares(usuario_nombre=None):
     '''
         Retorna los lugares agregados por un usuario
@@ -25,6 +29,7 @@ def get_lugares(usuario_nombre=None):
 
 
 @app.route("/getlugar/<nombre_lugar>")
+@auto.doc()
 def get_lugar(nombre_lugar=None):
     '''
         TODO: capaz que se prodia agregar nombre_usuario tambien,
@@ -37,6 +42,7 @@ def get_lugar(nombre_lugar=None):
 
 
 @app.route("/guardarlugar",methods=['POST'])
+@auto.doc()
 def guardar_lugar():
     '''
 
@@ -51,7 +57,9 @@ def guardar_lugar():
     lugar.guardar()
     return json.dumps({'status':'OK'})
 
-
+@app.route('/docs')
+def documentation():
+    return auto.html()
 
 def main():
     '''Metodo principal'''
