@@ -16,7 +16,7 @@
     <body>
         <div class="container">
             <div class="row">
-                <div class="column column-50 column-offset-25">
+                <div class="column column-75 column-offset-25">
                     <h1>API Escuelas de Informática</h1>
                 </div>
             </div>
@@ -27,30 +27,26 @@
             </div>
             <div class="row">
                 <div class="column">
-                    <h5><strong> / </strong></h5>
-                    <button class="button">GET</button>
+                    <h5><strong> / </strong></h5>, <code>Method: GET</code>
                     <p> Retorna la pagina principal </p>
                 </div> 
             </div>
             <div class="row">
                 <div class="column">
-                    <h5><strong> /getlugares/<usuario_nombre> </strong></h5>
+                    <h5><strong> /getlugares/<usuario_nombre> </strong></h5>, <code>Method: GET</code>
                     <h5><strong> /getlugares/ </strong></h5>
-                    <button class="button">GET</button>
                     <p> Retorna los lugares agregados por un usuario en particular o todos si usuario_nombre no es especificado. </p>
                 </div>
             </div>
             <div class="row">
                 <div class="column">
-                    <h5><strong> /getlugar/<nombre_lugar> </strong></h5>
-                    <button class="button">GET</button>
+                    <h5><strong> /getlugar/<nombre_lugar> </strong></h5>, <code>Method: GET</code>
                     <p> Retorna un lugar cuyo nombre sea nombre_lugar </p>
                 </div>
             </div>
             <div class="row">
                 <div class="column">
-                    <h5><strong> /guardarlugar </strong></h5>
-                    <button class="button">POST</button>
+                    <h5><strong> /guardarlugar </strong></h5>, <code>Method: POST</code>
                     <p> Permite guardar un lugar en la base de datos.
                     Los datos serán considerados válidos si tienen la siguiente forma: 
                     </p>
