@@ -14,14 +14,9 @@
 
     </head>
     <body>
-        <style type="text/css">
-            .inline {
-                display: inline
-            }
-        </style>
         <div class="container">
             <div class="row">
-                <div class="column column-75 column-offset-25">
+                <div class="column">
                     <h1>API Escuelas de Informática</h1>
                 </div>
             </div>
@@ -32,30 +27,34 @@
             </div>
             <div class="row">
                 <div class="column">
-                    <h5 class="inline"><strong> / </strong></h5>, <code>Method: GET</code>
-                    <p> Retorna la pagina principal </p>
+                    <h5 class="inline"><strong> / </strong></h5>
+                    <p> Retorna la pagina principal. </p>
+                    <code>Method: GET</code>
                 </div> 
             </div>
             <div class="row">
                 <div class="column">
-                    <h5 class="inline"><strong> /getlugares/<usuario_nombre> </strong></h5>, <code>Method: GET</code>
+                    <h5 class="inline"><strong> /getlugares/<usuario_nombre> </strong></h5>
                     <h5><strong> /getlugares/ </strong></h5>
                     <p> Retorna los lugares agregados por un usuario en particular o todos si usuario_nombre no es especificado. </p>
+                    <code>Method: GET</code>
                 </div>
             </div>
             <div class="row">
                 <div class="column">
-                    <h5 class="inline"><strong> /getlugar/<nombre_lugar> </strong></h5>, <code>Method: GET</code>
-                    <p> Retorna un lugar cuyo nombre sea nombre_lugar </p>
+                    <h5 class="inline"><strong> /getlugar/<nombre_lugar> </strong></h5>
+                    <p> Retorna un lugar cuyo nombre sea nombre_lugar. </p>
+                    <code>Method: GET</code>
                 </div>
             </div>
             <div class="row">
                 <div class="column">
-                    <h5 class="inline"><strong> /guardarlugar </strong></h5>, <code>Method: POST</code>
+                    <h5 class="inline"><strong> /guardarlugar </strong></h5>
                     <p> Permite guardar un lugar en la base de datos.
                     Los datos serán considerados válidos si tienen la siguiente forma: 
                     </p>
                     <code>{"nombre": "CASA", "latlng": "2222/222", "descripcion": "es mi lugar", "usuario":"pablo1n7"} </code>
+                    <code>Method: POST </code>
                 </div>
             </div>
         </div>
