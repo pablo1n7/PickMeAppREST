@@ -3,8 +3,10 @@ import os
 from pymongo import MongoClient
 
 ''' Configuración de la base '''
-CLIENT = MongoClient(os.environ['OPENSHIFT_MONGODB_DB_URL'])
-#CLIENT = MongoClient('mongodb://localhost:27017/')
+if 'OPENSHIFT_APP_NAME' in os.environ:
+    CLIENT = MongoClient(os.environ['OPENSHIFT_MONGODB_DB_URL'])
+else:
+    CLIENT = MongoClient('mongodb://localhost:27017/')
 DB = CLIENT.pickmeapp
 ''' ----------------------- '''
 
@@ -12,6 +14,7 @@ class Lugar(object):
     '''
         Clase Lugar, representa un punto de interes en el mapa
     '''
+    id_lugar = 0
     nombre = ""
     descripcion = ""
     latlng = ""
@@ -63,6 +66,7 @@ class Usuario(object):
         Clase Usuario representa un usuario de la app
     '''
     nombre = ""
+    mac = ""
 
     @classmethod
     def get_usuario(cls, nombre_usuario):
