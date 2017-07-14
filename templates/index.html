@@ -1,0 +1,82 @@
+<html>  
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="statics/js/custom.js"></script>
+          <!-- Google Fonts -->
+        <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+        <!-- CSS Reset -->
+        <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
+
+        <!-- Milligram CSS minified -->
+        <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+
+        <!-- You should properly set the path from the main file. -->
+
+    </head>
+    <body>
+        <style type="text/css">
+            .inline {display: inline}
+            .method {
+                background-color: #00ab40;
+                color:white;
+                font-weight: bold;
+            }
+            pre>code {
+                white-space: normal
+            }    
+        </style>
+        <div class="container">
+            <div class="row">
+                <div class="column">
+                    <h1>API | Escuelas de Informática</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <h3>Rutas</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <code class="float-right method">GET</code>
+                    <h5 class="inline"><strong> / </strong></h5>
+                    <p> Retorna la pagina principal. </p>
+                </div> 
+            </div>
+            <div class="row">
+                <div class="column">
+                    <code class="float-right method">GET</code>
+                    <h5 class="inline"><strong> /getlugares/&lt;usuario_nombre&gt; </strong></h5>
+                    <h5><strong> /getlugares </strong></h5>
+                    <p> Retorna los lugares agregados por un usuario en particular o todos si usuario_nombre no es especificado. </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <code class="float-right method">GET</code>
+                    <h5 class="inline"><strong> /getlugar/&lt;nombre_lugar&gt; </strong></h5>
+                    <p> Retorna un lugar cuyo nombre sea nombre_lugar. </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <code class="float-right method">POST </code>
+                    <h5 class="inline"><strong> /guardarlugar </strong></h5>
+                    <p> Permite guardar un lugar en la base de datos.
+                    Los datos serán considerados válidos si tienen la siguiente forma: 
+                    </p>
+                    <div>                    
+                        <pre>                    
+                            <code> 
+                                { "nombre": "CASA", "latlng": "-42.22/-65.26", "descripcion": "es mi lugar", "usuario":"mi_nombre_de_usuario" } 
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>
