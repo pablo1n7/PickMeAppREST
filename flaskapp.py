@@ -24,18 +24,6 @@ def get_lugares(usuario_nombre=None):
     return json.dumps(lugares)
 
 
-@app.route("/getlugar/<nombre_lugar>")
-def get_lugar(nombre_lugar=None):
-    '''
-        TODO: capaz que se prodia agregar nombre_usuario tambien,
-            para que el filtro se mas exacto
-
-        Retorna el lugar con nombre = nombre_lugar
-    '''
-    lugar = Lugar.get_lugar(nombre_lugar)
-    return json.dumps(lugar)
-
-
 @app.route("/guardarlugar",methods=['POST'])
 def guardar_lugar():
     '''
