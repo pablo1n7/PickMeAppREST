@@ -123,3 +123,38 @@ class Usuario(object):
         d_usuario = self.__dict__
         d_usuario['_id'] = ""
         return d_usuario
+
+class Mensaje(object):
+    '''
+        Clase Mensaje representa un mensaje de la app
+    '''
+    id_origen = ""
+    id_destino = ""
+    mensaje = ""
+    estado = ""
+
+    @classmethod
+    def get_mensajes(cls,id_destino):
+        '''
+            Obtiene todos los mensajes no enviados de la base con ese destino.
+        '''
+        mensajes = [Mensaje(r['id_origen'], r['id_destino'], r['mensaje'], r['estado']) 
+                    for r in list(DB.mensajes.find({"id_destino":id_destino, "estado":"no_enviado"}))]
+        return mensajes
+
+    def __init__(self, _id_origen, _id_destino, mensaje, estado="no_enviado"):
+        '''
+            Constructor de la clase Mensaje
+        '''
+        self.id_destino = _id_destino
+        self.id_origen = _id_origen
+        self.mensaje = mensaje
+        self.estado = estado
+
+    def guardar(self):
+        '''
+            Guarda un mensaje en la base de datos
+        '''
+        return DB.mensajes.insert_one(self.__dict__).inserted_id
+
+

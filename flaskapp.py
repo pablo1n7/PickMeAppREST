@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
-from models.models import Usuario, Lugar
+from models.models import Usuario, Lugar, Mensaje
 from flask import Flask, request,\
      render_template
 from flask_socketio import SocketIO,emit
@@ -69,11 +69,20 @@ def guardar_usuario():
 
 
 @socketio.on('message')
-def enviar_mensaje(origen, destinatorio, mensaje):
+def enviar_mensaje(origen, destinatorio, texto_mensaje):
     '''
         Mensajeria por socketIO. Evento "message".
     '''
-    emit("message", {"origen":origen,"mensaje":mensaje}, room=clients[destinatorio])
+    usuario_destino = Usuario.get_usuario(destinatorio)
+    usuario_origen = Usuario.get_usuario(origen)
+    mensaje = Mensaje(usuario_origen.id_usuario, usuario_destino.id_usuario, texto_mensaje)
+    try:
+        socket_destino = clients[usuario_destino.id_usuario]
+        emit("message", {"origen":origen, "mensaje":texto_mensaje}, room=socket_destino)
+        mensaje.estado = "enviado"
+        mensaje.guardar()
+    except KeyError:
+        mensaje.guardar()
 
 @socketio.on('connect')
 def connect():
