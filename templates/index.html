@@ -86,7 +86,6 @@
                     </div>
                 </div>
             </div>
-        </div>
         <div class="row">
                 <div class="column">
                     <h3>Por SOCKET-IO</h1>
@@ -96,18 +95,46 @@
                 <div class="column">
                     
                     <h5><strong> Evento "connect" </strong></h5>
-                    <p> Para conecetarse con el socket se le debe indicar el id del usuario perteneciente al equipo {user_id=1234567}</p>
+                    <p> Para conectarse con el socket se le debe indicar el id del usuario perteneciente al equipo {user_id=1234567}. Los usuarios deben ser cargados previamente.</p>
                 </div>
             </div>
             <div class="row">
                 <div class="column">
                     
                     <h5 class="inline"><strong> Evento "message" </strong></h5>
-                    <p> Permite enviar un mensaje a otro usuario, se le debe indicar id del usuario origen, id del destinario y el mensaje.
-                    </p>
-                    
+                    <p> Permite enviar un mensaje a otro usuario, se le debe indicar nombre del usuario origen, nombre del destinatario y el mensaje. Si el usuario no está online, recibirá el mensaje cuando inicie una conexión con el socket.</p>
                 </div>
             </div>
+            <div class="row">
+                <div class="column">
+                    <div class="column">
+                        <h3>Pruebas en JS</h1>
+                    </div>
+                    <br>
+                    <h7 class="inline"><strong> Conexión </strong></h7>
+                    <div>                    
+                        <pre>                    
+                            <code> 
+                                var socket = io.connect('http://' + document.domain + ':' + location.port,{ query: "user_id=1234562" });
+                                <br>
+                                socket.on('message', function(data) {
+                                    console.log(data)
+                                });
+                            </code>
+                        </pre>
+                    </div>
+                    <br>
+                    <h7 class="inline"><strong> Envio de mensajes </strong></h7>
+                    <div>                    
+                        <pre>                    
+                            <code> 
+                               socket.emit("message","pablo1n7",'brunito_12',"hola que aseeee")
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 
 </html>

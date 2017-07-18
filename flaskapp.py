@@ -90,8 +90,13 @@ def connect():
         Metodo de conexion, que ademas registra las conexiones activas.
     '''
     user_id = request.args.get('user_id', '')
+    usuario = Usuario.get_usuario_por_id(user_id)
     clients[user_id] = request.sid
-    print('Client Connect {}'.format(user_id))
+    mensajes_sin_enviar = Mensaje.get_mensajes(usuario.id_usuario)
+    for m in mensajes_sin_enviar:
+        emit("message", {"origen":Usuario.get_usuario_por_id(m.id_origen).nombre, "mensaje":m.mensaje}, room=request.sid)
+        m.registrar_envio()
+    print('Client Connect {}'.format(usuario.nombre))
 
 @socketio.on('disconnect')
 def disconnect():

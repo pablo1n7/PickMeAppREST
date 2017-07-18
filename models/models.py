@@ -77,7 +77,15 @@ class Usuario(object):
             Obtiene un usuario de la base segun su nombre de usuario.
         '''
         usuario = [Usuario(r) for r in list(DB.usuarios.find({"nombre":nombre_usuario}))]
-        return usuario[0]    
+        return usuario[0]
+
+    @classmethod
+    def get_usuario_por_id(cls, id_usuario):
+        '''
+            Obtiene un usuario de la base segun su id de usuario.
+        '''
+        usuario = [Usuario(r) for r in list(DB.usuarios.find({"id_usuario":id_usuario}))]
+        return usuario[0] 
 
     @classmethod
     def get_usuarios(cls):
@@ -157,4 +165,14 @@ class Mensaje(object):
         '''
         return DB.mensajes.insert_one(self.__dict__).inserted_id
 
-
+    def registrar_envio(self):
+        '''
+            Registra en la base el mensaje como enviado 
+        '''
+        mensaje_previo = {}
+        mensaje_previo["id_origen"] = self.id_origen
+        mensaje_previo["id_destino"] = self.id_destino
+        mensaje_previo["mensaje"] = self.mensaje
+        mensaje_previo["estado"] = "no_enviado"
+        self.estado = "enviado"
+        DB.mensajes.replace_one(mensaje_previo, self.__dict__)
