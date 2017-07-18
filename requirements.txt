@@ -1,2 +1,6 @@
 Flask
 pymongo
+flask-socketio
+gevent-websocket
+python-engineio
+eventlet
