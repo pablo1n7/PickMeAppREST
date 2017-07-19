@@ -7,7 +7,7 @@ from flask_socketio import SocketIO,emit
 
 app = Flask(__name__, static_folder='statics')
 app.config.from_pyfile('flaskapp.cfg',)
-socketio = SocketIO(app, ping_timeout=120, ping_interval=60)
+socketio = SocketIO(app, ping_timeout=120)
 
 clients = {}
 
