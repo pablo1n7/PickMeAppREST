@@ -111,5 +111,7 @@ def main():
     '''Metodo principal'''
     socketio.run(app)
 
-if __name__ == '__main__':
-    main()
+import thread
+
+if __name__ == "__main__":
+    thread.start_new_thread(main,())
