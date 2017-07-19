@@ -7,8 +7,7 @@ from flask_socketio import SocketIO,emit
 
 app = Flask(__name__, static_folder='statics')
 app.config.from_pyfile('flaskapp.cfg',)
-socketio = SocketIO(app, ping_timeout=120,async_mode='threading')
-
+socketio = SocketIO(app, ping_timeout=120, async_mode='threading')
 clients = {}
 
 @app.route("/")
@@ -110,7 +109,7 @@ def disconnect():
 
 def main():
     '''Metodo principal'''
-    socketio.run(app,port=5000)
+    socketio.run(app,port=5000,threaded=True)
 
 if __name__ == '__main__':
     main()
