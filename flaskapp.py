@@ -7,7 +7,13 @@ from flask_socketio import SocketIO,emit
 
 app = Flask(__name__, static_folder='statics')
 app.config.from_pyfile('flaskapp.cfg',)
-socketio = SocketIO(app, ping_timeout=120, async_mode='threading')
+
+async_mode = None
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app, async_mode=async_mode)
+thread = None
+
+#socketio = SocketIO(app, ping_timeout=120, async_mode='threading')
 clients = {}
 
 @app.route("/")
@@ -83,19 +89,32 @@ def enviar_mensaje(origen, destinatorio, texto_mensaje):
     except KeyError:
         mensaje.guardar()
 
+
+def connect(user_id,_request):
+    '''
+        Metodo de conexion, que ademas registra las conexiones activas.
+    '''
+    #user_id = request.args.get('user_id', '')
+    usuario = Usuario.get_usuario_por_id(user_id)
+    clients[user_id] = _request
+    mensajes_sin_enviar = Mensaje.get_mensajes(usuario.id_usuario)
+    for m in mensajes_sin_enviar:
+        pass
+        #emit("message", {"origen":Usuario.get_usuario_por_id(m.id_origen).nombre, "mensaje":m.mensaje}, room=_request)
+        #m.registrar_envio()
+    print('Client Connect {}'.format(usuario.nombre))
+
 @socketio.on('connect')
-def connect():
+def connect_1():
     '''
         Metodo de conexion, que ademas registra las conexiones activas.
     '''
     user_id = request.args.get('user_id', '')
-    usuario = Usuario.get_usuario_por_id(user_id)
-    clients[user_id] = request.sid
-    mensajes_sin_enviar = Mensaje.get_mensajes(usuario.id_usuario)
-    for m in mensajes_sin_enviar:
-        emit("message", {"origen":Usuario.get_usuario_por_id(m.id_origen).nombre, "mensaje":m.mensaje}, room=request.sid)
-        m.registrar_envio()
-    print('Client Connect {}'.format(usuario.nombre))
+    args = {'user_id':user_id, '_request':request.sid}
+    #global thread
+    # if thread is None:
+    thread = socketio.start_background_task(connect, **args)
+    
 
 @socketio.on('disconnect')
 def disconnect():
@@ -111,7 +130,5 @@ def main():
     '''Metodo principal'''
     socketio.run(app)
 
-import thread
-
 if __name__ == "__main__":
-    thread.start_new_thread(main,())
+    main()
