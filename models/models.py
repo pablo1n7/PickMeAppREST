@@ -2,13 +2,13 @@
 import os
 from pymongo import MongoClient
 
-''' Configuración de la base '''
+#Configuración de la base
 if 'OPENSHIFT_APP_NAME' in os.environ:
     CLIENT = MongoClient(os.environ['OPENSHIFT_MONGODB_DB_URL'])
 else:
     CLIENT = MongoClient('mongodb://localhost:27017/')
 DB = CLIENT.pickmeapp
-''' ----------------------- '''
+#-----------------------
 
 class Lugar(object):
     '''
@@ -27,7 +27,7 @@ class Lugar(object):
             obtiene los lugares agregados por ese usuario.
         '''
         if  filtro_usuario != None:
-            filtro  = {"usuario":filtro_usuario}
+            filtro = {"usuario":filtro_usuario}
         else:
             filtro = {}
         return [Lugar(r).diccionarizar() for r in list(DB.lugares.find(filtro))]
@@ -37,7 +37,6 @@ class Lugar(object):
         '''
             Obtiene el lugar que tiene el nombre ingresado
         '''
-        
         return [Lugar(r).diccionarizar() for r in list(DB.lugares.find({"nombre":filtro_nombre}))]
 
     def __init__(self, data):
@@ -48,6 +47,10 @@ class Lugar(object):
         self.descripcion = data["descripcion"]
         self.latlng = data["latlng"]
         self.usuario = data["usuario"]
+        try:
+            self.id_lugar = str(data['_id'])
+        except KeyError:
+            return
 
     def guardar(self):
         '''
@@ -60,7 +63,7 @@ class Lugar(object):
             Prepara los objetos para enviar.
         '''
         d_lugar = self.__dict__
-        d_lugar['_id'] = ""
+        #d_lugar['_id'] = str(d_lugar['_id'])
         return d_lugar
 
 
@@ -85,7 +88,7 @@ class Usuario(object):
             Obtiene un usuario de la base segun su id de usuario.
         '''
         usuario = [Usuario(r) for r in list(DB.usuarios.find({"id_usuario":id_usuario}))]
-        return usuario[0] 
+        return usuario[0]
 
     @classmethod
     def get_usuarios(cls):
@@ -97,7 +100,7 @@ class Usuario(object):
 
 
     @classmethod
-    def check_usuario(cls, nombre_usuario,id_usuario):
+    def check_usuario(cls, nombre_usuario, id_usuario):
         '''
            Check_usuario comprueba que el nombre de usuario sea unico.
            Devuelve True si esta disponible para usar.
@@ -120,7 +123,7 @@ class Usuario(object):
         '''
             Guarda un lugar en la base de datos
         '''
-        if not Usuario.check_usuario(self.nombre,self.id_usuario):
+        if not Usuario.check_usuario(self.nombre, self.id_usuario):
             raise Exception
         return DB.usuarios.insert_one(self.__dict__).inserted_id
 
@@ -129,7 +132,6 @@ class Usuario(object):
             Prepara los objetos para enviar.
         '''
         d_usuario = self.__dict__
-        d_usuario['_id'] = ""
         return d_usuario
 
 class Mensaje(object):
@@ -142,15 +144,16 @@ class Mensaje(object):
     estado = ""
 
     @classmethod
-    def get_mensajes(cls,id_destino):
+    def get_mensajes(cls, id_destino):
         '''
             Obtiene todos los mensajes no enviados de la base con ese destino.
         '''
-        mensajes = [Mensaje(r['id_origen'], r['id_destino'], r['mensaje'], r['estado']) 
-                    for r in list(DB.mensajes.find({"id_destino":id_destino, "estado":"no_enviado"}))]
+        mensajes = [Mensaje(r['id_origen'], r['id_destino'], r['mensaje'], r['estado'])
+                    for r in list(DB.mensajes.find({"id_destino":id_destino,
+                                                    "estado":"no_enviado"}))]
         return mensajes
 
-    def __init__(self, _id_origen, _id_destino, mensaje, estado="no_enviado"):
+    def __init__(self, _id_origen, _id_destino, mensaje, estado="no_enviado", id_lugar=None):
         '''
             Constructor de la clase Mensaje
         '''
@@ -158,6 +161,7 @@ class Mensaje(object):
         self.id_origen = _id_origen
         self.mensaje = mensaje
         self.estado = estado
+        self.id_lugar = id_lugar
 
     def guardar(self):
         '''
@@ -167,7 +171,7 @@ class Mensaje(object):
 
     def registrar_envio(self):
         '''
-            Registra en la base el mensaje como enviado 
+            Registra en la base el mensaje como enviado
         '''
         mensaje_previo = {}
         mensaje_previo["id_origen"] = self.id_origen

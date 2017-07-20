@@ -41,14 +41,7 @@
             </div>
             <div class="row">
                 <div class="column">
-                    <code class="float-right method">GET</code>
-                    <h5><strong> /getusuarios </strong></h5>
-                    <p> Retorna los usuarios agregados a la aplicación</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="column">
-                    <code class="float-right method">POST </code>
+                    <!-- <code class="float-right method">GET</code> -->
                     <h5 class="inline"><strong> /guardarusuario </strong></h5>
                     <p> Permite guardar un usuario en la base de datos.
                     Los datos serán considerados válidos si tienen la siguiente forma: 
@@ -60,27 +53,13 @@
                             </code>
                         </pre>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="column">
-                    <code class="float-right method">GET</code>
-                    <h5 class="inline"><strong> /getlugares/&lt;usuario_nombre&gt; </strong></h5>
-                    <h5><strong> /getlugares </strong></h5>
-                    <p> Retorna los lugares agregados por un usuario en particular o todos si usuario_nombre no es especificado. </p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="column">
-                    <code class="float-right method">POST </code>
-                    <h5 class="inline"><strong> /guardarlugar </strong></h5>
-                    <p> Permite guardar un lugar en la base de datos.
-                    Los datos serán considerados válidos si tienen la siguiente forma: 
-                    </p>
+                    Codigos de error:
                     <div>                    
-                        <pre>                    
+                        <pre style="border-left: 0.3rem solid #ca4d4d;">                    
                             <code> 
-                                { "nombre": "CASA", "latlng": "-42.22/-65.26", "descripcion": "es mi lugar", "usuario":"id_del_usuario" } 
+                                codigo = 500
+                                <br> 
+                                descripcion = "ERROR,Usuario en uso"
                             </code>
                         </pre>
                     </div>
@@ -91,49 +70,105 @@
                     <h3>Por SOCKET-IO</h1>
                 </div>
             </div>
+            
             <div class="row">
                 <div class="column">
                     
                     <h5><strong> Evento "connect" </strong></h5>
                     <p> Para conectarse con el socket se le debe indicar el id del usuario perteneciente al equipo {user_id=1234567}. Los usuarios deben ser cargados previamente.</p>
                 </div>
+                
+            </div>
+            <div>                    
+                <pre>                    
+                    <code> 
+                        var socket = io.connect('http://' + document.domain + ':' + location.port,{ query: "user_id=1234562" });
+                        
+                    </code>
+                </pre>
+            </div>
+            <div>
+                 <pre style="border-left: 0.3rem solid #ca4d4d;">              
+                    <code> 
+                        evento = "no_registrado"
+                        <br>
+                        codigo = 404
+                        <br> 
+                        descripcion = "ERROR, usuario no registrado"
+                    </code>
+                </pre>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <!-- <code class="float-right method">GET</code> -->
+                    <h5><strong> getusuarios </strong></h5>
+                    <p> Retorna los usuarios agregados a la aplicación</p>
+                </div>
+            </div>
+            <div>                    
+                <pre>                    
+                    <code> 
+                        socket.emit("getusuarios")
+                    </code>
+                </pre>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <!-- <code class="float-right method">GET</code> -->
+                    <h5><strong> getlugares </strong></h5>
+                    <p> Retorna los lugares agregados por un usuario en particular o todos si usuario_nombre no es especificado. </p>
+                </div>
+            </div>
+            <div>                    
+                <pre>                    
+                    <code> 
+                        socket.emit("getlugares")
+                        <br><br>
+                        socket.emit("getlugares","pablo1n7")
+                    </code>
+                </pre>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <!-- <code class="float-right method">GET</code> -->
+                    <h5 class="inline"><strong> guardarlugar </strong></h5>
+                    <p> Permite guardar un lugar en la base de datos.
+                    Los datos a enviar son:
+                    <ul>
+                        <li>nombre: nombre del lugar.
+                        <li>latlng: langitud / longitud en forma de cadena. Ej: "353333/33354".
+                        <li>descripcion: una descripcion breve del lugar.
+                        <li>usuario: nickname o nombre de usuario.
+                    </ul>
+                    </p>
+                    <div>                    
+                        <pre>                    
+                            <code> 
+                                socket.emit("guardarlugar","Casita","333/333","es mi casita","pablo1n7")
+                            </code>
+                        </pre>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="column">
                     
-                    <h5 class="inline"><strong> Evento "message" </strong></h5>
+                    <h5 class="inline"><strong> Evento "mensaje" </strong></h5>
                     <p> Permite enviar un mensaje a otro usuario, se le debe indicar nombre del usuario origen, nombre del destinatario y el mensaje. Si el usuario no está online, recibirá el mensaje cuando inicie una conexión con el socket.</p>
                 </div>
             </div>
-            <div class="row">
-                <div class="column">
-                    <div class="column">
-                        <h3>Pruebas en JS</h1>
-                    </div>
-                    <br>
-                    <h7 class="inline"><strong> Conexión </strong></h7>
-                    <div>                    
-                        <pre>                    
-                            <code> 
-                                var socket = io.connect('http://' + document.domain + ':' + location.port,{ query: "user_id=1234562" });
-                                <br>
-                                socket.on('message', function(data) {
-                                    console.log(data)
-                                });
-                            </code>
-                        </pre>
-                    </div>
-                    <br>
-                    <h7 class="inline"><strong> Envio de mensajes </strong></h7>
-                    <div>                    
-                        <pre>                    
-                            <code> 
-                               socket.emit("message","pablo1n7",'brunito_12',"hola que aseeee")
-                            </code>
-                        </pre>
-                    </div>
-                </div>
+            <div>                    
+                <pre>                    
+                    <code> 
+                        socket.emit("message",'brunito_12',"hola que aseeee")
+                        <br>
+                        <br>
+
+                        socket.emit("message",'brunito_12',"Venite!","id_lugar")
+                    </code>
+                </pre>
             </div>
+            
         </div>
     </body>
 
