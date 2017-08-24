@@ -46,6 +46,7 @@ def get_usuarios():
     '''
         Retorna los usuarios    
     '''
+    print("getusuarios")
     usuarios = Usuario.get_usuarios()
     emit("getusuarios", json.dumps(usuarios), room=request.sid)
 
@@ -82,27 +83,33 @@ def enviar_mensaje(destinatorio, texto_mensaje,id_lugar=None):
     except KeyError:
         mensaje.guardar()
 
-@socketio.on('connect')
-def conectar():
+
+
+
+@socketio.on('conectar')
+def conectar(user_id):
     '''
         Metodo de conexion, que ademas registra las conexiones activas.
     '''
-    user_id = request.args.get('user_id', '')
+    print("Alguien se quiere conectar")
+    #user_id = request.args.get('user_id', '')
     try:
+        print("Alguien se quiere conectar {}".format(user_id))
         usuario = Usuario.get_usuario_por_id(user_id)
-        emit("connect", {'status':'OK','usuario':usuario.nombre}, room=request.sid)
+        emit("conectar", {'status':'OK','usuario':usuario.nombre}, room=request.sid)
+        clients[user_id] = request.sid
+        mensajes_sin_enviar = Mensaje.get_mensajes(usuario.id_usuario)
+        for msg in mensajes_sin_enviar:
+            emit("mensaje", {"origen":Usuario.get_usuario_por_id(msg.id_origen).nombre,
+                            "mensaje":msg.mensaje,"id_lugar":msg.id_lugar}, room=request.sid)
+            msg.registrar_envio()
+        print('Client Connect {}'.format(usuario.nombre))
+    
     except Exception:
         emit("no_registrado", {'codigo':404, 'descripcion':'ERROR: usuario no encontrado'}, room=request.sid)
+        print("no_registrado")
         #disconnect()
-        return
-
-    clients[user_id] = request.sid
-    mensajes_sin_enviar = Mensaje.get_mensajes(usuario.id_usuario)
-    for msg in mensajes_sin_enviar:
-        emit("mensaje", {"origen":Usuario.get_usuario_por_id(msg.id_origen).nombre,
-                         "mensaje":msg.mensaje,"id_lugar":msg.id_lugar}, room=request.sid)
-        msg.registrar_envio()
-    print('Client Connect {}'.format(usuario.nombre))
+    
 
 @socketio.on('disconnect')
 def desconectar():
@@ -117,7 +124,7 @@ def desconectar():
 def main():
     '''Metodo principal'''
     #socketio.run(app,host="192.168.0.9",port=80)
-    socketio.run(app)
+    socketio.run(app,host="0.0.0.0")
 
 if __name__ == "__main__":
     main()
