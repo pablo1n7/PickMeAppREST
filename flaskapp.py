@@ -125,8 +125,8 @@ def desconectar():
 
 def main():
     '''Metodo principal'''
-    #socketio.run(app,host="192.168.0.9",port=80)
-    socketio.run(app,host="0.0.0.0")
+    socketio.run(app,port=80)
+    #socketio.run(app,host="0.0.0.0")
 
 if __name__ == "__main__":
     main()
