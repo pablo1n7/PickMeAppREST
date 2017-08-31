@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import json
 from models.models import Usuario, Lugar, Mensaje
 from flask import Flask, request,\
@@ -7,7 +8,7 @@ from flask_socketio import SocketIO, emit, disconnect
 
 app = Flask(__name__, static_folder='statics')
 app.config.from_pyfile('flaskapp.cfg',)
-socketio = SocketIO(app, ping_timeout=120, async_mode='threading')
+socketio = SocketIO(app, ping_interval=6000, ping_timeout=6000) #async_mode='threading'
 clients = {}
 
 @app.route("/")
@@ -119,6 +120,7 @@ def desconectar():
     for key in list(clients.keys()):
         if clients[key] == request.sid:
             print('Client disconnected')
+
             del clients[key]
 
 def main():
