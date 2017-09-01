@@ -65,6 +65,7 @@ def guardar_lugar(nombre, latlng, descripcion, usuario):
     lugar = Lugar(data)
     id_lugar = lugar.guardar()
     emit("guardarlugar", {'codigo':'200', 'id_lugar':str(id_lugar)}, room=request.sid)
+    emit('act-lugares',data)
 
 @socketio.on('act-mensajes')
 def enviar_mensaje(destinatorio, texto_mensaje,id_lugar=None):
