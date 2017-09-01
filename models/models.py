@@ -142,6 +142,7 @@ class Mensaje(object):
     id_destino = ""
     mensaje = ""
     estado = ""
+    tiempo = ""
 
     @classmethod
     def get_mensajes(cls, id_destino):
@@ -153,6 +154,16 @@ class Mensaje(object):
                                                     "estado":"no_enviado"}))]
         return mensajes
 
+    @classmethod
+    def get_mensajes_usuario(cls, id_destino):
+        '''
+            Obtiene todos los mensajes no enviados de la base con ese destino.
+        '''
+        mensajes = [Mensaje(r['id_origen'], r['id_destino'], r['mensaje'], r['estado'],r['tiempo'])
+                    for r in list(DB.mensajes.find({"id_destino":id_destino,
+                                                    "estado":"enviado"}))]
+        return mensajes
+
     def __init__(self, _id_origen, _id_destino, mensaje, estado="no_enviado", id_lugar=None):
         '''
             Constructor de la clase Mensaje
@@ -162,6 +173,7 @@ class Mensaje(object):
         self.mensaje = mensaje
         self.estado = estado
         self.id_lugar = id_lugar
+        self.tiempo= "22/22/22 11:00"
 
     def guardar(self):
         '''
@@ -176,6 +188,7 @@ class Mensaje(object):
         mensaje_previo = {}
         mensaje_previo["id_origen"] = self.id_origen
         mensaje_previo["id_destino"] = self.id_destino
+        mensaje_previo["tiempo"] = self.tiempo
         mensaje_previo["mensaje"] = self.mensaje
         mensaje_previo["estado"] = "no_enviado"
         self.estado = "enviado"

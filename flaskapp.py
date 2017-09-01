@@ -39,6 +39,7 @@ def get_lugares(usuario_nombre=None):
         Retorna los lugares agregados por un usuario
             si usuario_nombre!=None regresa todos  los lugares
     '''
+    print("getlugares")
     lugares = Lugar.get_lugares(usuario_nombre)
     emit("getlugares", json.dumps(lugares), room=request.sid)
 
@@ -65,7 +66,7 @@ def guardar_lugar(nombre, latlng, descripcion, usuario):
     id_lugar = lugar.guardar()
     emit("guardarlugar", {'codigo':'200', 'id_lugar':str(id_lugar)}, room=request.sid)
 
-@socketio.on('mensaje')
+@socketio.on('act-mensajes')
 def enviar_mensaje(destinatorio, texto_mensaje,id_lugar=None):
     '''
         Mensajeria por socketIO. Evento "mensaje".
@@ -77,12 +78,32 @@ def enviar_mensaje(destinatorio, texto_mensaje,id_lugar=None):
         for key in list(clients.keys()):
             if clients[key] == request.sid:
                 origen = key
-        emit("mensaje", {"origen":origen, "mensaje":texto_mensaje, "id_lugar":id_lugar}, 
+        emit("act-mensajes", {"origen":origen, "mensaje":texto_mensaje, "id_lugar":id_lugar},
              room=socket_destino)
         mensaje.estado = "enviado"
         mensaje.guardar()
     except KeyError:
         mensaje.guardar()
+
+@socketio.on('getmensajes')
+def get_mensajes():
+    '''
+        Mensajeria por socketIO. Evento "getmensajes".
+        Si el usuario que pide los mensajes no esta conectado el servidor da 500 error.
+    '''
+    print("getMensajes")
+    for key in list(clients.keys()):
+        if clients[key] == request.sid:
+            origen = key
+
+    usuario_origen = Usuario.get_usuario_por_id(origen)
+    mensajes = Mensaje.get_mensajes_usuario(usuario_origen.id_usuario)
+    mensajes_dic = []
+    for msg in mensajes:
+        mensajes_dic.append({"origen":Usuario.get_usuario_por_id(msg.id_origen).nombre, "destino":Usuario.get_usuario_por_id(msg.id_destino).nombre,
+                             "mensaje":msg.mensaje, "tiempo":msg.tiempo, "id_lugar":msg.id_lugar})
+    
+    emit("getmensajes", json.dumps(mensajes_dic), room=request.sid)
 
 
 
@@ -101,7 +122,7 @@ def conectar(user_id):
         clients[user_id] = request.sid
         mensajes_sin_enviar = Mensaje.get_mensajes(usuario.id_usuario)
         for msg in mensajes_sin_enviar:
-            emit("mensaje", {"origen":Usuario.get_usuario_por_id(msg.id_origen).nombre,
+            emit("act-mensajes", {"origen":Usuario.get_usuario_por_id(msg.id_origen).nombre,
                             "mensaje":msg.mensaje,"id_lugar":msg.id_lugar}, room=request.sid)
             msg.registrar_envio()
         print('Client Connect {}'.format(usuario.nombre))
@@ -120,13 +141,12 @@ def desconectar():
     for key in list(clients.keys()):
         if clients[key] == request.sid:
             print('Client disconnected')
-
             del clients[key]
 
 def main():
     '''Metodo principal'''
-    socketio.run(app,port=80)
-    #socketio.run(app,host="0.0.0.0")
+    #socketio.run(app,port=80)
+    socketio.run(app,host="0.0.0.0")
 
 if __name__ == "__main__":
     main()
