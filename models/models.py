@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from pymongo import MongoClient
+import datetime
 
 #Configuración de la base
 if 'OPENSHIFT_APP_NAME' in os.environ:
@@ -159,7 +160,7 @@ class Mensaje(object):
         '''
             Obtiene todos los mensajes no enviados de la base con ese destino.
         '''
-        mensajes = [Mensaje(r['id_origen'], r['id_destino'], r['mensaje'], r['estado'],r['tiempo'])
+        mensajes = [Mensaje(r['id_origen'], r['id_destino'], r['mensaje'], r['estado'], r['tiempo'])
                     for r in list(DB.mensajes.find({"id_destino":id_destino,
                                                     "estado":"enviado"}))]
         return mensajes
@@ -173,7 +174,7 @@ class Mensaje(object):
         self.mensaje = mensaje
         self.estado = estado
         self.id_lugar = id_lugar
-        self.tiempo= "22/22/22 11:00"
+        self.tiempo = datetime.datetime.now().strftime("%m-%d %H:%M")  #self.tiempo = "22/22/22 11:00" 
 
     def guardar(self):
         '''
