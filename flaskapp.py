@@ -30,8 +30,11 @@ def guardar_usuario():
     try:
         usr = Usuario(request.get_json())
         usr.guardar()
+        emit('act-usuarios',usr.diccionarizar(), broadcast=True)
+
     except Exception:
         return json.dumps({'codigo':500, 'descripcion':'ERROR:Usuario en uso'})
+    
     return json.dumps({'codigo':'200'})
 
 @socketio.on('getlugares')
@@ -41,7 +44,11 @@ def get_lugares(usuario_nombre=None):
             si usuario_nombre!=None regresa todos  los lugares
     '''
     print("getlugares")
-    lugares = Lugar.get_lugares(usuario_nombre)
+    for key in list(clients.keys()):
+        if clients[key] == request.sid:
+            origen = key
+    usuario = Usuario.get_usuario_por_id(origen)
+    lugares = Lugar.get_lugares(usuario.nombre)
     emit("getlugares", json.dumps(lugares), room=request.sid)
 
 @socketio.on('getusuarios')
@@ -66,7 +73,7 @@ def guardar_lugar(nombre, latlng, descripcion, usuario):
     lugar = Lugar(data)
     id_lugar = lugar.guardar()
     emit("guardarlugar", {'codigo':'200', 'id_lugar':str(id_lugar)}, room=request.sid)
-    emit('act-lugares',data)
+    emit('act-lugares', data)
 
 @socketio.on('act-mensajes')
 def enviar_mensaje(destinatorio, texto_mensaje,id_lugar=None):
