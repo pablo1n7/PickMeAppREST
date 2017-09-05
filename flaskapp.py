@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import datetime
 from models.models import Usuario, Lugar, Mensaje
 from flask import Flask, request,\
      render_template
@@ -72,15 +73,25 @@ def enviar_mensaje(destinatorio, texto_mensaje,id_lugar=None):
     '''
         Mensajeria por socketIO. Evento "mensaje".
     '''
+    origen = None
+    for key in list(clients.keys()):
+        if clients[key] == request.sid:
+            origen = key
+
+    if origen == None:
+        print("Error: Usuario Origen Desconectado")
+
     usuario_destino = Usuario.get_usuario(destinatorio)
-    mensaje = Mensaje(usuario_destino.id_usuario, texto_mensaje, id_lugar)
+    usuario_origen = Usuario.get_usuario_por_id(origen)
+    mensaje = Mensaje(_id_origen=origen, _id_destino=usuario_destino.id_usuario,
+                      _mensaje=texto_mensaje, _tiempo=datetime.datetime.now().strftime("%m-%d %H:%M"), _id_lugar=id_lugar)
     try:
         socket_destino = clients[usuario_destino.id_usuario]
         for key in list(clients.keys()):
             if clients[key] == request.sid:
                 origen = key
-        emit("act-mensajes", {"origen":origen, "mensaje":texto_mensaje, "id_lugar":id_lugar},
-             room=socket_destino)
+        emit("act-mensajes", {"origen":usuario_origen.nombre, "destino":usuario_destino.nombre, "mensaje":mensaje.mensaje,"tiempo": mensaje.tiempo, 
+                              "id_lugar":mensaje.id_lugar}, room=socket_destino)
         mensaje.estado = "enviado"
         mensaje.guardar()
     except KeyError:

@@ -150,7 +150,7 @@ class Mensaje(object):
         '''
             Obtiene todos los mensajes no enviados de la base con ese destino.
         '''
-        mensajes = [Mensaje(r['id_origen'], r['id_destino'], r['mensaje'], r['estado'])
+        mensajes = [Mensaje(r['id_origen'], r['id_destino'], r['mensaje'], r["tiempo"], r['estado'], r["id_lugar"])
                     for r in list(DB.mensajes.find({"id_destino":id_destino,
                                                     "estado":"no_enviado"}))]
         return mensajes
@@ -160,26 +160,28 @@ class Mensaje(object):
         '''
             Obtiene todos los mensajes no enviados de la base con ese destino.
         '''
-        mensajes = [Mensaje(r['id_origen'], r['id_destino'], r['mensaje'], r['estado'], r['tiempo'])
+        mensajes = [Mensaje(r['id_origen'], r['id_destino'], r['mensaje'], r["tiempo"], r['estado'], r["id_lugar"])
                     for r in list(DB.mensajes.find({"id_destino":id_destino,
                                                     "estado":"enviado"}))]
         return mensajes
 
-    def __init__(self, _id_origen, _id_destino, mensaje, estado="no_enviado", id_lugar=None):
+    def __init__(self, _id_origen, _id_destino, _mensaje, _tiempo,
+                 _estado="no_enviado", _id_lugar=None):
         '''
             Constructor de la clase Mensaje
         '''
         self.id_destino = _id_destino
         self.id_origen = _id_origen
-        self.mensaje = mensaje
-        self.estado = estado
-        self.id_lugar = id_lugar
-        self.tiempo = datetime.datetime.now().strftime("%m-%d %H:%M")  #self.tiempo = "22/22/22 11:00" 
+        self.mensaje = _mensaje
+        self.estado = _estado
+        self.id_lugar = _id_lugar
+        self.tiempo = _tiempo #self.tiempo = "22/22/22 11:00"
 
     def guardar(self):
         '''
             Guarda un mensaje en la base de datos
         '''
+        self.tiempo = datetime.datetime.now().strftime("%m-%d %H:%M")
         return DB.mensajes.insert_one(self.__dict__).inserted_id
 
     def registrar_envio(self):
